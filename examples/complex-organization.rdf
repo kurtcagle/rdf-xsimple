@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Complex Organization Example
+  
+  Demonstrates:
+  - Multiple relationships between entities
+  - Shared and unique resources
+  - Mixed inlining and references
+  - Complex organizational structures
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <!-- Main organization -->
+  <schema:Organization rdf:about="ex:acme">
+    <schema:name>Acme Corporation</schema:name>
+    <schema:alternateName>ACME Corp</schema:alternateName>
+    <schema:legalName>Acme Corporation, Inc.</schema:legalName>
+    <schema:taxID>12-3456789</schema:taxID>
+    
+    <!-- Inlined headquarters address (single reference) -->
+    <schema:address>
+      <schema:PostalAddress rdf:about="ex:acme-hq-address">
+        <schema:streetAddress>100 Innovation Drive</schema:streetAddress>
+        <schema:addressLocality>San Francisco</schema:addressLocality>
+        <schema:addressRegion>California</schema:addressRegion>
+        <schema:postalCode>94105</schema:postalCode>
+        <schema:addressCountry rdf:resource="ex:usa"/>
+      </schema:PostalAddress>
+    </schema:address>
+    
+    <!-- Contact information -->
+    <schema:telephone>+1-555-0100</schema:telephone>
+    <schema:email>info@acme.example.com</schema:email>
+    <schema:url type="anyURI">https://acme.example.com</schema:url>
+    
+    <!-- Organization metadata -->
+    <schema:foundingDate type="date">2010-06-15</schema:foundingDate>
+    <schema:numberOfEmployees type="integer">500</schema:numberOfEmployees>
+    <schema:industry>Information Technology</schema:industry>
+    
+    <!-- Multiple employees (references to shared resources) -->
+    <schema:employee rdf:resource="ex:alice"/>
+    <schema:employee rdf:resource="ex:bob"/>
+    <schema:employee rdf:resource="ex:carol"/>
+    
+    <!-- CEO (reference) -->
+    <schema:founder rdf:resource="ex:alice"/>
+    
+    <!-- Department references -->
+    <schema:department rdf:resource="ex:engineering"/>
+    <schema:department rdf:resource="ex:sales"/>
+    <schema:department rdf:resource="ex:hr"/>
+  </schema:Organization>
+  
+  <!-- Employees -->
+  <schema:Person rdf:about="ex:alice">
+    <schema:name>Alice Smith</schema:name>
+    <schema:givenName>Alice</schema:givenName>
+    <schema:familyName>Smith</schema:familyName>
+    <schema:email>alice@acme.example.com</schema:email>
+    <schema:jobTitle>Chief Executive Officer</schema:jobTitle>
+    <schema:worksFor rdf:resource="ex:acme"/>
+    
+    <!-- Personal contact (inlined, single reference) -->
+    <schema:contactPoint>
+      <schema:ContactPoint rdf:about="ex:alice-contact">
+        <schema:telephone>+1-555-0101</schema:telephone>
+        <schema:contactType>work</schema:contactType>
+        <schema:email>alice@acme.example.com</schema:email>
+      </schema:ContactPoint>
+    </schema:contactPoint>
+    
+    <!-- Work address (reference to shared address) -->
+    <schema:workLocation rdf:resource="ex:acme-hq-address"/>
+    
+    <schema:birthDate type="date">1985-03-15</schema:birthDate>
+    <schema:gender>female</schema:gender>
+  </schema:Person>
+  
+  <schema:Person rdf:about="ex:bob">
+    <schema:name>Bob Jones</schema:name>
+    <schema:givenName>Bob</schema:givenName>
+    <schema:familyName>Jones</schema:familyName>
+    <schema:email>bob@acme.example.com</schema:email>
+    <schema:jobTitle>VP of Engineering</schema:jobTitle>
+    <schema:worksFor rdf:resource="ex:acme"/>
+    <schema:workLocation rdf:resource="ex:acme-hq-address"/>
+    <schema:memberOf rdf:resource="ex:engineering"/>
+    <schema:birthDate type="date">1982-07-22</schema:birthDate>
+    <schema:gender>male</schema:gender>
+  </schema:Person>
+  
+  <schema:Person rdf:about="ex:carol">
+    <schema:name>Carol White</schema:name>
+    <schema:givenName>Carol</schema:givenName>
+    <schema:familyName>White</schema:familyName>
+    <schema:email>carol@acme.example.com</schema:email>
+    <schema:jobTitle>Director of Sales</schema:jobTitle>
+    <schema:worksFor rdf:resource="ex:acme"/>
+    <schema:workLocation rdf:resource="ex:acme-hq-address"/>
+    <schema:memberOf rdf:resource="ex:sales"/>
+    <schema:birthDate type="date">1990-11-08</schema:birthDate>
+    <schema:gender>female</schema:gender>
+  </schema:Person>
+  
+  <!-- Departments -->
+  <schema:Organization rdf:about="ex:engineering">
+    <schema:name>Engineering Department</schema:name>
+    <schema:parentOrganization rdf:resource="ex:acme"/>
+    <schema:employee rdf:resource="ex:bob"/>
+    <schema:numberOfEmployees type="integer">150</schema:numberOfEmployees>
+    
+    <!-- Department-specific location -->
+    <schema:location>
+      <schema:Place rdf:about="ex:eng-office">
+        <schema:name>Engineering Floor</schema:name>
+        <schema:containedInPlace rdf:resource="ex:acme-hq-address"/>
+        <schema:floorLevel>3</schema:floorLevel>
+      </schema:Place>
+    </schema:location>
+  </schema:Organization>
+  
+  <schema:Organization rdf:about="ex:sales">
+    <schema:name>Sales Department</schema:name>
+    <schema:parentOrganization rdf:resource="ex:acme"/>
+    <schema:employee rdf:resource="ex:carol"/>
+    <schema:numberOfEmployees type="integer">75</schema:numberOfEmployees>
+  </schema:Organization>
+  
+  <schema:Organization rdf:about="ex:hr">
+    <schema:name>Human Resources Department</schema:name>
+    <schema:alternateName>HR</schema:alternateName>
+    <schema:parentOrganization rdf:resource="ex:acme"/>
+    <schema:numberOfEmployees type="integer">25</schema:numberOfEmployees>
+  </schema:Organization>
+  
+  <!-- Country (shared reference) -->
+  <schema:Country rdf:about="ex:usa">
+    <schema:name>United States of America</schema:name>
+    <schema:alternateName>USA</schema:alternateName>
+    <schema:alternateName>United States</schema:alternateName>
+    <schema:alternateName>US</schema:alternateName>
+  </schema:Country>
+</rdf:RDF>

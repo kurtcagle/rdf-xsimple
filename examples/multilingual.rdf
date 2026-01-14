@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Multilingual Content Example
+  
+  Demonstrates language-tagged literals:
+  - Multiple language variants
+  - Clean lang attribute syntax
+  - Mixed language content
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <schema:Book rdf:about="ex:book1">
+    <!-- Title in multiple languages -->
+    <schema:name lang="en">The Great Gatsby</schema:name>
+    <schema:name lang="fr">Gatsby le Magnifique</schema:name>
+    <schema:name lang="de">Der große Gatsby</schema:name>
+    <schema:name lang="es">El Gran Gatsby</schema:name>
+    <schema:name lang="ja">グレート・ギャツビー</schema:name>
+    
+    <!-- Description in multiple languages -->
+    <schema:description lang="en">A classic American novel set in the Jazz Age</schema:description>
+    <schema:description lang="fr">Un roman américain classique se déroulant à l'ère du jazz</schema:description>
+    <schema:description lang="de">Ein klassischer amerikanischer Roman aus der Jazz-Ära</schema:description>
+    
+    <schema:author rdf:resource="ex:fitzgerald"/>
+    <schema:datePublished type="date">1925-04-10</schema:datePublished>
+    <schema:inLanguage>en</schema:inLanguage>
+    <schema:numberOfPages type="integer">180</schema:numberOfPages>
+    <schema:isbn>978-0-7432-7356-5</schema:isbn>
+  </schema:Book>
+  
+  <schema:Person rdf:about="ex:fitzgerald">
+    <schema:name>F. Scott Fitzgerald</schema:name>
+    <schema:givenName>Francis Scott</schema:givenName>
+    <schema:familyName>Fitzgerald</schema:familyName>
+    <schema:birthDate type="date">1896-09-24</schema:birthDate>
+    <schema:deathDate type="date">1940-12-21</schema:deathDate>
+    <schema:nationality>American</schema:nationality>
+  </schema:Person>
+  
+  <schema:Organization rdf:about="ex:org1">
+    <!-- Organization name in multiple languages -->
+    <schema:name lang="en">World Health Organization</schema:name>
+    <schema:name lang="fr">Organisation mondiale de la santé</schema:name>
+    <schema:name lang="es">Organización Mundial de la Salud</schema:name>
+    <schema:name lang="zh">世界卫生组织</schema:name>
+    <schema:name lang="ar">منظمة الصحة العالمية</schema:name>
+    
+    <!-- Alternate names -->
+    <schema:alternateName lang="en">WHO</schema:alternateName>
+    <schema:alternateName lang="fr">OMS</schema:alternateName>
+    
+    <schema:foundingDate type="date">1948-04-07</schema:foundingDate>
+    <schema:url type="anyURI">https://www.who.int</schema:url>
+  </schema:Organization>
+  
+  <schema:Product rdf:about="ex:product1">
+    <schema:name lang="en">Wireless Headphones</schema:name>
+    <schema:name lang="fr">Casque sans fil</schema:name>
+    <schema:name lang="de">Kabellose Kopfhörer</schema:name>
+    
+    <schema:description lang="en">Premium wireless headphones with noise cancellation</schema:description>
+    <schema:description lang="fr">Casque sans fil haut de gamme avec réduction du bruit</schema:description>
+    <schema:description lang="de">Premium-Wireless-Kopfhörer mit Geräuschunterdrückung</schema:description>
+    
+    <schema:brand>TechBrand</schema:brand>
+    <schema:model>WH-2000XM5</schema:model>
+    <schema:price type="decimal">299.99</schema:price>
+    <schema:priceCurrency>USD</schema:priceCurrency>
+  </schema:Product>
+</rdf:RDF>

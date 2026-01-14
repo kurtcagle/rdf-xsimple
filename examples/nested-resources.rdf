@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Nested Resources Example
+  
+  Demonstrates denormalization/inlining:
+  - Single-reference resources nested within their parent
+  - Preservation of rdf:about on nested resources
+  - Multi-level nesting
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <schema:Person rdf:about="ex:alice">
+    <schema:name>Alice Smith</schema:name>
+    <schema:email>alice@example.com</schema:email>
+    
+    <!-- Nested address (single reference - inlined) -->
+    <schema:address>
+      <schema:PostalAddress rdf:about="ex:addr1">
+        <schema:streetAddress>123 Main Street</schema:streetAddress>
+        <schema:addressLocality>Portland</schema:addressLocality>
+        <schema:addressRegion>Oregon</schema:addressRegion>
+        <schema:postalCode>97201</schema:postalCode>
+        
+        <!-- Nested country (single reference - inlined) -->
+        <schema:addressCountry>
+          <schema:Country rdf:about="ex:usa">
+            <schema:name>United States</schema:name>
+            <schema:alternateName>USA</schema:alternateName>
+          </schema:Country>
+        </schema:addressCountry>
+      </schema:PostalAddress>
+    </schema:address>
+    
+    <!-- Nested contact point -->
+    <schema:contactPoint>
+      <schema:ContactPoint rdf:about="ex:contact1">
+        <schema:telephone>+1-555-0123</schema:telephone>
+        <schema:contactType>home</schema:contactType>
+      </schema:ContactPoint>
+    </schema:contactPoint>
+    
+    <!-- Reference to shared resource (multiple references) -->
+    <schema:worksFor rdf:resource="ex:acme"/>
+  </schema:Person>
+  
+  <!-- Shared organization (referenced by multiple people) -->
+  <schema:Organization rdf:about="ex:acme">
+    <schema:name>Acme Corporation</schema:name>
+    <schema:url type="anyURI">https://acme.example.com</schema:url>
+    <schema:numberOfEmployees type="integer">500</schema:numberOfEmployees>
+  </schema:Organization>
+</rdf:RDF>

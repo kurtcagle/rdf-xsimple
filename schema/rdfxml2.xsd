@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RDF-XSimple XML Schema Definition
+  
+  This schema defines the structure and validation rules for RDF-XSimple documents.
+  
+  Version: 1.0.0
+  Date: 2026-01-14
+  License: MIT
+  
+  Key Features:
+  - Context-based namespace management
+  - CURIE support in rdf:about and rdf:resource attributes
+  - Simplified datatype syntax (type attribute)
+  - List/Bag/Seq collections
+  - RDF-star quoted triples
+  - Extensible for custom vocabularies
+  
+  Usage:
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfxml2.xsd">
+      <!-- RDF-XSimple content -->
+    </rdf:RDF>
+-->
+<xs:schema 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  targetNamespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  version="2.0.0">
+
+  <!-- ================================================================
+       ANNOTATIONS AND DOCUMENTATION
+       ================================================================ -->
+  
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+      RDF-XSimple Schema Definition
+      
+      This schema validates RDF-XSimple documents, which modernize the
+      original RDF/XML format with:
+      - Context blocks for namespace management
+      - CURIE support for compact URIs
+      - Simplified datatype syntax
+      - Clear list/collection syntax
+      - RDF-star support for quoted triples
+      
+      For more information, see: https://github.com/yourusername/rdfxml2-spec
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- ================================================================
+       SIMPLE TYPES
+       ================================================================ -->
+  
+  <xs:simpleType name="CURIEorURI">
+    <xs:annotation>
+      <xs:documentation>
+        A Compact URI (CURIE) or full URI.
+        CURIEs have the form "prefix:localName"
+        Full URIs must be valid IRIs per RFC 3987.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="NCName">
+    <xs:annotation>
+      <xs:documentation>
+        A non-colonized name for use as prefix identifiers.
+        Must start with letter or underscore, followed by
+        letters, digits, underscores, or hyphens.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z_][A-Za-z0-9_\-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="XSDDatatype">
+    <xs:annotation>
+      <xs:documentation>
+        Simplified XSD datatype names for the "type" attribute.
+        Common types like "integer", "decimal", "boolean", etc.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="string"/>
+      <xs:enumeration value="boolean"/>
+      <xs:enumeration value="integer"/>
+      <xs:enumeration value="int"/>
+      <xs:enumeration value="long"/>
+      <xs:enumeration value="short"/>
+      <xs:enumeration value="byte"/>
+      <xs:enumeration value="decimal"/>
+      <xs:enumeration value="float"/>
+      <xs:enumeration value="double"/>
+      <xs:enumeration value="date"/>
+      <xs:enumeration value="time"/>
+      <xs:enumeration value="dateTime"/>
+      <xs:enumeration value="duration"/>
+      <xs:enumeration value="gYear"/>
+      <xs:enumeration value="gMonth"/>
+      <xs:enumeration value="gDay"/>
+      <xs:enumeration value="gYearMonth"/>
+      <xs:enumeration value="gMonthDay"/>
+      <xs:enumeration value="anyURI"/>
+      <xs:enumeration value="base64Binary"/>
+      <xs:enumeration value="hexBinary"/>
+      <xs:enumeration value="normalizedString"/>
+      <xs:enumeration value="token"/>
+      <xs:enumeration value="language"/>
+      <xs:enumeration value="Name"/>
+      <xs:enumeration value="NCName"/>
+      <xs:enumeration value="NMTOKEN"/>
+      <xs:enumeration value="positiveInteger"/>
+      <xs:enumeration value="negativeInteger"/>
+      <xs:enumeration value="nonPositiveInteger"/>
+      <xs:enumeration value="nonNegativeInteger"/>
+      <xs:enumeration value="unsignedLong"/>
+      <xs:enumeration value="unsignedInt"/>
+      <xs:enumeration value="unsignedShort"/>
+      <xs:enumeration value="unsignedByte"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================================================================
+       ROOT ELEMENT: rdf:RDF
+       ================================================================ -->
+  
+  <xs:element name="RDF">
+    <xs:annotation>
+      <xs:documentation>
+        Root element of RDF-XSimple document.
+        Contains optional context block followed by resource descriptions.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="rdf:context" minOccurs="0" maxOccurs="1"/>
+        <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ================================================================
+       CONTEXT BLOCK
+       ================================================================ -->
+  
+  <xs:element name="context">
+    <xs:annotation>
+      <xs:documentation>
+        Context block for centralized namespace/prefix declarations.
+        Must be the first child of rdf:RDF if present.
+        Contains one or more prefix definitions.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="rdf:prefix" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="prefix">
+    <xs:annotation>
+      <xs:documentation>
+        Defines a namespace prefix for use in CURIEs.
+        Example: &lt;rdf:prefix name="ex" uri="http://example.org/"/&gt;
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" type="rdf:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The prefix identifier (e.g., "ex", "schema", "foaf")
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="uri" type="xs:anyURI" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The namespace URI that the prefix represents
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ================================================================
+       RESOURCE ATTRIBUTES
+       ================================================================ -->
+  
+  <xs:attributeGroup name="resourceAttributes">
+    <xs:annotation>
+      <xs:documentation>
+        Common attributes that can appear on resource elements.
+      </xs:documentation>
+    </xs:annotation>
+    
+    <xs:attribute name="about" type="rdf:CURIEorURI">
+      <xs:annotation>
+        <xs:documentation>
+          The IRI or CURIE identifying this resource.
+          Example: rdf:about="ex:alice" or rdf:about="http://example.org/alice"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="ID" type="xs:ID">
+      <xs:annotation>
+        <xs:documentation>
+          XML ID for fragment identification (rarely used in RDF-XSimple)
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="nodeID" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>
+          Explicit blank node identifier (rarely used in RDF-XSimple)
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <!-- ================================================================
+       PROPERTY ATTRIBUTES
+       ================================================================ -->
+  
+  <xs:attributeGroup name="propertyAttributes">
+    <xs:annotation>
+      <xs:documentation>
+        Attributes that can appear on property elements.
+      </xs:documentation>
+    </xs:annotation>
+    
+    <xs:attribute name="resource" type="rdf:CURIEorURI">
+      <xs:annotation>
+        <xs:documentation>
+          Reference to another resource (object of the triple).
+          Example: rdf:resource="ex:bob"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="resources" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>
+          Space-separated list of resource references (shorthand for lists).
+          Example: rdf:resources="ex:alice ex:bob ex:carol"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="type" type="rdf:XSDDatatype">
+      <xs:annotation>
+        <xs:documentation>
+          Simplified XSD datatype for literal values.
+          Example: type="integer", type="date", type="boolean"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="datatype" type="rdf:CURIEorURI">
+      <xs:annotation>
+        <xs:documentation>
+          Full datatype URI or CURIE (for non-XSD datatypes).
+          Example: rdf:datatype="geo:wktLiteral"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="lang" type="xs:language">
+      <xs:annotation>
+        <xs:documentation>
+          Language tag for the literal value (BCP 47).
+          Example: lang="en", lang="fr", lang="en-US"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="list" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Indicates an ordered RDF List (rdf:List).
+          Example: rdf:list="true"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="bag" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Indicates an unordered collection (rdf:Bag).
+          Example: rdf:bag="true"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="seq" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Indicates an ordered sequence (rdf:Seq).
+          Example: rdf:seq="true"
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <!-- ================================================================
+       RDF-STAR SUPPORT
+       ================================================================ -->
+  
+  <xs:element name="QuotedTriple">
+    <xs:annotation>
+      <xs:documentation>
+        RDF-star quoted triple for making statements about statements.
+        Contains subject, predicate, and object elements.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="rdf:subject" minOccurs="1" maxOccurs="1"/>
+        <xs:element ref="rdf:predicate" minOccurs="1" maxOccurs="1"/>
+        <xs:element ref="rdf:object" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="subject">
+    <xs:annotation>
+      <xs:documentation>
+        Subject component of a quoted triple.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="rdf:QuotedTriple"/>
+        <xs:any namespace="##any" processContents="lax"/>
+      </xs:choice>
+      <xs:attribute name="resource" type="rdf:CURIEorURI"/>
+      <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="predicate">
+    <xs:annotation>
+      <xs:documentation>
+        Predicate component of a quoted triple.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="rdf:QuotedTriple"/>
+        <xs:any namespace="##any" processContents="lax"/>
+      </xs:choice>
+      <xs:attribute name="resource" type="rdf:CURIEorURI"/>
+      <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="object">
+    <xs:annotation>
+      <xs:documentation>
+        Object component of a quoted triple.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="rdf:QuotedTriple"/>
+        <xs:any namespace="##any" processContents="lax"/>
+      </xs:choice>
+      <xs:attribute name="resource" type="rdf:CURIEorURI"/>
+      <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="quotes">
+    <xs:annotation>
+      <xs:documentation>
+        Wrapper element for quoted triples in RDF-star.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="rdf:QuotedTriple"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ================================================================
+       LEGACY RDF/XML ELEMENTS (for compatibility)
+       ================================================================ -->
+  
+  <xs:element name="Description">
+    <xs:annotation>
+      <xs:documentation>
+        Generic resource description (use typed elements when possible).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="rdf:resourceAttributes"/>
+      <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="type">
+    <xs:annotation>
+      <xs:documentation>
+        Explicit rdf:type property (use typed element names instead).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="resource" type="rdf:CURIEorURI" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ================================================================
+       COMPLEX TYPE DEFINITIONS
+       ================================================================ -->
+  
+  <xs:complexType name="ResourceType" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        Type definition for resource elements.
+        Can contain property elements and nested resources.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="rdf:resourceAttributes"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+  
+  <xs:complexType name="PropertyType" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        Type definition for property elements.
+        Can contain literal text, nested resources, or quoted triples.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="rdf:QuotedTriple"/>
+      <xs:any namespace="##any" processContents="lax"/>
+    </xs:choice>
+    <xs:attributeGroup ref="rdf:propertyAttributes"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+
+  <!-- ================================================================
+       VALIDATION ASSERTIONS
+       ================================================================ -->
+  
+  <xs:element name="validationRules">
+    <xs:annotation>
+      <xs:documentation>
+        Validation constraints for RDF-XSimple documents.
+        
+        Key Rules:
+        1. rdf:context must be first child of rdf:RDF if present
+        2. CURIEs must have defined prefixes in context
+        3. Resources with rdf:about preserve identity when nested
+        4. Only one of: type, rdf:datatype, lang can be specified
+        5. Only one of: rdf:list, rdf:bag, rdf:seq can be true
+        6. rdf:resources is shorthand, cannot combine with nested elements
+        
+        Note: Some rules require Schematron or application-level validation.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+</xs:schema>

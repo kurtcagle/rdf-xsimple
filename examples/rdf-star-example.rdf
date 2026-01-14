@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RDF-star Example
+  
+  Demonstrates quoted triples (RDF-star) for:
+  - Statement annotations
+  - Provenance tracking
+  - Confidence scores
+  - Temporal validity
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <!-- Claim about a relationship -->
+  <ex:Claim rdf:about="ex:claim1">
+    <rdf:quotes>
+      <rdf:QuotedTriple>
+        <rdf:subject rdf:resource="ex:alice"/>
+        <rdf:predicate rdf:resource="schema:knows"/>
+        <rdf:object rdf:resource="ex:bob"/>
+      </rdf:QuotedTriple>
+    </rdf:quotes>
+    <ex:confidence type="decimal">0.95</ex:confidence>
+    <ex:source rdf:resource="ex:survey2024"/>
+    <ex:reportedBy rdf:resource="ex:carol"/>
+    <ex:reportedDate type="dateTime">2024-12-01T10:30:00Z</ex:reportedDate>
+    <schema:description>Survey response indicating acquaintance</schema:description>
+  </ex:Claim>
+  
+  <!-- Claim about employment -->
+  <ex:Claim rdf:about="ex:claim2">
+    <rdf:quotes>
+      <rdf:QuotedTriple>
+        <rdf:subject rdf:resource="ex:alice"/>
+        <rdf:predicate rdf:resource="schema:worksFor"/>
+        <rdf:object rdf:resource="ex:acme"/>
+      </rdf:QuotedTriple>
+    </rdf:quotes>
+    <ex:confidence type="decimal">1.0</ex:confidence>
+    <ex:source rdf:resource="ex:hrDatabase"/>
+    <ex:validFrom type="date">2020-01-15</ex:validFrom>
+    <ex:validUntil type="date">2025-12-31</ex:validUntil>
+    <schema:description>Employment relationship from HR records</schema:description>
+  </ex:Claim>
+  
+  <!-- Measurement with uncertainty -->
+  <ex:Measurement rdf:about="ex:measurement1">
+    <rdf:quotes>
+      <rdf:QuotedTriple>
+        <rdf:subject rdf:resource="ex:alice"/>
+        <rdf:predicate rdf:resource="schema:height"/>
+        <rdf:object>1.75</rdf:object>
+      </rdf:QuotedTriple>
+    </rdf:quotes>
+    <ex:unit>meters</ex:unit>
+    <ex:uncertainty type="decimal">0.02</ex:uncertainty>
+    <ex:measuredBy rdf:resource="ex:device123"/>
+    <ex:measuredDate type="dateTime">2024-11-15T14:20:00Z</ex:measuredDate>
+  </ex:Measurement>
+  
+  <!-- Supporting entities -->
+  <schema:Person rdf:about="ex:alice">
+    <schema:name>Alice Smith</schema:name>
+  </schema:Person>
+  
+  <schema:Person rdf:about="ex:bob">
+    <schema:name>Bob Jones</schema:name>
+  </schema:Person>
+  
+  <schema:Person rdf:about="ex:carol">
+    <schema:name>Carol White</schema:name>
+  </schema:Person>
+  
+  <schema:Organization rdf:about="ex:acme">
+    <schema:name>Acme Corporation</schema:name>
+  </schema:Organization>
+  
+  <ex:Survey rdf:about="ex:survey2024">
+    <schema:name>2024 Social Network Survey</schema:name>
+    <schema:datePublished type="date">2024-12-01</schema:datePublished>
+  </ex:Survey>
+  
+  <ex:Database rdf:about="ex:hrDatabase">
+    <schema:name>Human Resources Database</schema:name>
+  </ex:Database>
+  
+  <ex:Device rdf:about="ex:device123">
+    <schema:name>Precision Height Meter Model X</schema:name>
+  </ex:Device>
+</rdf:RDF>

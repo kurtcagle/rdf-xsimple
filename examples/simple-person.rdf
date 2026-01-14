@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Simple Person Example
+  
+  Demonstrates basic RDF/XML 2.0 features:
+  - Context-based namespace declarations
+  - CURIE usage
+  - Simplified datatypes
+  - Type-based element names
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <schema:Person rdf:about="ex:alice">
+    <schema:name>Alice Smith</schema:name>
+    <schema:email>alice@example.com</schema:email>
+    <schema:age type="integer">30</schema:age>
+    <schema:height type="decimal">1.75</schema:height>
+    <schema:birthDate type="date">1995-03-15</schema:birthDate>
+    <schema:gender>female</schema:gender>
+    <schema:jobTitle>Software Engineer</schema:jobTitle>
+  </schema:Person>
+</rdf:RDF>

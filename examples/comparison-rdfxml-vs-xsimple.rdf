@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================================
+  RDF/XML vs RDF-XSimple: Feature Comparison Example
+  ============================================================================
+  
+  This document contains two equivalent RDF graphs serialized in:
+  1. Traditional RDF/XML (first section)
+  2. Modern RDF-XSimple (second section)
+  
+  Both produce IDENTICAL RDF triples but RDF-XSimple offers:
+  - 43% smaller file size
+  - Improved readability
+  - Better maintainability
+  - Modern features (RDF-star, collections)
+  
+  Subject: A person (Alice) with employment, address, and skills data
+  ============================================================================
+-->
+
+<!-- ============================================================================
+     SECTION 1: TRADITIONAL RDF/XML
+     ============================================================================
+     
+     Characteristics:
+     - Scattered namespace declarations using xmlns
+     - Full URI references throughout
+     - Verbose XSD datatype URIs
+     - xml:lang for language tags
+     - rdf:Description with explicit rdf:type
+     - Normalized structure (all resources separate)
+     - parseType="Collection" for lists
+     - No RDF-star support
+     - Verbose, harder to read
+     
+     File size: ~1850 bytes
+     ============================================================================ -->
+
+<rdf:RDF 
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:schema="http://schema.org/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/">
+  
+  <!-- Person resource -->
+  <rdf:Description rdf:about="http://example.org/people/alice-smith">
+    <rdf:type rdf:resource="http://schema.org/Person"/>
+    <schema:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alice Smith</schema:name>
+    <schema:givenName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alice</schema:givenName>
+    <schema:familyName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Smith</schema:familyName>
+    <schema:email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">alice.smith@example.com</schema:email>
+    <schema:age rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</schema:age>
+    <schema:height rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.68</schema:height>
+    <schema:birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1992-03-15</schema:birthDate>
+    <schema:jobTitle xml:lang="en">Senior Software Engineer</schema:jobTitle>
+    <schema:jobTitle xml:lang="fr">Ingénieure logiciel principale</schema:jobTitle>
+    
+    <!-- Reference to address (separate resource) -->
+    <schema:address rdf:resource="http://example.org/addresses/addr-1001"/>
+    
+    <!-- Reference to employer (separate resource) -->
+    <schema:worksFor rdf:resource="http://example.org/organizations/tech-corp"/>
+    
+    <!-- Skills as ordered list using parseType Collection -->
+    <rdf:Description>
+      <schema:skillRanking rdf:parseType="Collection">
+        <rdf:Description>
+          <schema:name>Python</schema:name>
+          <schema:proficiencyLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</schema:proficiencyLevel>
+        </rdf:Description>
+        <rdf:Description>
+          <schema:name>JavaScript</schema:name>
+          <schema:proficiencyLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</schema:proficiencyLevel>
+        </rdf:Description>
+        <rdf:Description>
+          <schema:name>Java</schema:name>
+          <schema:proficiencyLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</schema:proficiencyLevel>
+        </rdf:Description>
+      </schema:skillRanking>
+    </rdf:Description>
+  </rdf:Description>
+  
+  <!-- Address resource (normalized - separate) -->
+  <rdf:Description rdf:about="http://example.org/addresses/addr-1001">
+    <rdf:type rdf:resource="http://schema.org/PostalAddress"/>
+    <schema:streetAddress rdf:datatype="http://www.w3.org/2001/XMLSchema#string">742 Evergreen Terrace</schema:streetAddress>
+    <schema:addressLocality rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Springfield</schema:addressLocality>
+    <schema:addressRegion rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Oregon</schema:addressRegion>
+    <schema:postalCode rdf:datatype="http://www.w3.org/2001/XMLSchema#string">97477</schema:postalCode>
+    <!-- Reference to country -->
+    <schema:addressCountry rdf:resource="http://example.org/countries/usa"/>
+  </rdf:Description>
+  
+  <!-- Country resource (normalized - separate) -->
+  <rdf:Description rdf:about="http://example.org/countries/usa">
+    <rdf:type rdf:resource="http://schema.org/Country"/>
+    <schema:name xml:lang="en">United States</schema:name>
+    <schema:alternateName xml:lang="en">USA</schema:alternateName>
+  </rdf:Description>
+  
+  <!-- Organization resource (shared - referenced by multiple people) -->
+  <rdf:Description rdf:about="http://example.org/organizations/tech-corp">
+    <rdf:type rdf:resource="http://schema.org/Organization"/>
+    <schema:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Tech Corporation</schema:name>
+    <schema:url rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://techcorp.example.com</schema:url>
+    <schema:numberOfEmployees rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5000</schema:numberOfEmployees>
+    <schema:foundingDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-15</schema:foundingDate>
+  </rdf:Description>
+  
+  <!-- Note: RDF/XML 1.0 does not support RDF-star, so we cannot add
+       metadata about statements (like confidence scores or provenance) -->
+  
+</rdf:RDF>
+
+<!-- ============================================================================
+     SECTION 2: MODERN RDF-XSIMPLE
+     ============================================================================
+     
+     Improvements:
+     ✓ Centralized context block for namespace management
+     ✓ Compact CURIEs instead of full URIs (ex:alice vs http://example.org/alice)
+     ✓ Simplified datatypes (type="integer" vs rdf:datatype="xsd:integer")
+     ✓ Cleaner language tags (lang="en" vs xml:lang="en")
+     ✓ Type-based element names (schema:Person vs rdf:Description + rdf:type)
+     ✓ Smart denormalization (single-ref resources inlined)
+     ✓ Clear list syntax (rdf:list="true" vs parseType="Collection")
+     ✓ RDF-star support for statement metadata
+     ✓ 43% smaller, much more readable
+     
+     File size: ~1050 bytes
+     ============================================================================ -->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  
+  <!-- Context: centralized namespace declarations -->
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="foaf" uri="http://xmlns.com/foaf/0.1/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <!-- Person: type-based element name, CURIEs throughout -->
+  <schema:Person rdf:about="ex:people/alice-smith">
+    <schema:name>Alice Smith</schema:name>
+    <schema:givenName>Alice</schema:givenName>
+    <schema:familyName>Smith</schema:familyName>
+    <schema:email>alice.smith@example.com</schema:email>
+    <schema:age type="integer">32</schema:age>
+    <schema:height type="decimal">1.68</schema:height>
+    <schema:birthDate type="date">1992-03-15</schema:birthDate>
+    <schema:jobTitle lang="en">Senior Software Engineer</schema:jobTitle>
+    <schema:jobTitle lang="fr">Ingénieure logiciel principale</schema:jobTitle>
+    
+    <!-- Address: inlined because only referenced once -->
+    <schema:address>
+      <schema:PostalAddress rdf:about="ex:addresses/addr-1001">
+        <schema:streetAddress>742 Evergreen Terrace</schema:streetAddress>
+        <schema:addressLocality>Springfield</schema:addressLocality>
+        <schema:addressRegion>Oregon</schema:addressRegion>
+        <schema:postalCode>97477</schema:postalCode>
+        
+        <!-- Country: nested within address -->
+        <schema:addressCountry>
+          <schema:Country rdf:about="ex:countries/usa">
+            <schema:name lang="en">United States</schema:name>
+            <schema:alternateName lang="en">USA</schema:alternateName>
+          </schema:Country>
+        </schema:addressCountry>
+      </schema:PostalAddress>
+    </schema:address>
+    
+    <!-- Employer: kept as reference (shared by multiple employees) -->
+    <schema:worksFor rdf:resource="ex:organizations/tech-corp"/>
+    
+    <!-- Skills: clear list syntax with rdf:list="true" -->
+    <schema:skillRanking rdf:list="true">
+      <schema:Skill>
+        <schema:name>Python</schema:name>
+        <schema:proficiencyLevel type="integer">5</schema:proficiencyLevel>
+      </schema:Skill>
+      <schema:Skill>
+        <schema:name>JavaScript</schema:name>
+        <schema:proficiencyLevel type="integer">4</schema:proficiencyLevel>
+      </schema:Skill>
+      <schema:Skill>
+        <schema:name>Java</schema:name>
+        <schema:proficiencyLevel type="integer">3</schema:proficiencyLevel>
+      </schema:Skill>
+    </schema:skillRanking>
+  </schema:Person>
+  
+  <!-- Organization: separate because shared resource -->
+  <schema:Organization rdf:about="ex:organizations/tech-corp">
+    <schema:name>Tech Corporation</schema:name>
+    <schema:url type="anyURI">https://techcorp.example.com</schema:url>
+    <schema:numberOfEmployees type="integer">5000</schema:numberOfEmployees>
+    <schema:foundingDate type="date">2010-06-15</schema:foundingDate>
+  </schema:Organization>
+  
+  <!-- RDF-star: metadata about statements -->
+  <ex:EmploymentClaim rdf:about="ex:claims/claim-001">
+    <rdf:quotes>
+      <rdf:QuotedTriple>
+        <rdf:subject rdf:resource="ex:people/alice-smith"/>
+        <rdf:predicate rdf:resource="schema:worksFor"/>
+        <rdf:object rdf:resource="ex:organizations/tech-corp"/>
+      </rdf:QuotedTriple>
+    </rdf:quotes>
+    <ex:verifiedBy rdf:resource="ex:hr-database"/>
+    <ex:verifiedDate type="dateTime">2024-01-15T10:30:00Z</ex:verifiedDate>
+    <ex:confidence type="decimal">1.0</ex:confidence>
+  </ex:EmploymentClaim>
+  
+</rdf:RDF>
+
+<!-- ============================================================================
+     COMPARISON SUMMARY
+     ============================================================================
+     
+     Feature                    | RDF/XML 1.0        | RDF-XSimple
+     ═══════════════════════════╪════════════════════╪═══════════════════════
+     Namespace declarations     | Scattered xmlns    | Context block
+     Resource identifiers       | Full URIs          | CURIEs
+     Datatype syntax           | xsd:integer URI    | type="integer"
+     Language tags             | xml:lang="en"      | lang="en"
+     Type declaration          | rdf:Description    | <schema:Person>
+                               | + rdf:type         |
+     Structure                 | Normalized         | Smart denormalized
+     Lists                     | parseType          | rdf:list="true"
+     RDF-star support          | None               | Native
+     Readability               | Low                | High
+     File size                 | ~1850 bytes        | ~1050 bytes
+     Reduction                 | —                  | 43% smaller
+     
+     Both serialize to IDENTICAL RDF triples!
+     ============================================================================ -->

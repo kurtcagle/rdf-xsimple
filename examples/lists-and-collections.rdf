@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RDF Lists and Collections Example
+  
+  Demonstrates:
+  - Ordered lists with rdf:list="true"
+  - Unordered bags with rdf:bag="true"
+  - Ordered sequences with rdf:seq="true"
+  - Lists vs. multiple properties
+  - Lists of resources vs. literals
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:context>
+    <rdf:prefix name="schema" uri="http://schema.org/"/>
+    <rdf:prefix name="ex" uri="http://example.org/"/>
+  </rdf:context>
+  
+  <!-- Recipe with ordered steps and unordered ingredients -->
+  <ex:Recipe rdf:about="ex:chocolate-chip-cookies">
+    <schema:name>Chocolate Chip Cookies</schema:name>
+    <schema:recipeYield>24 cookies</schema:recipeYield>
+    <schema:totalTime>PT45M</schema:totalTime>
+    
+    <!-- Ordered list of instructions (rdf:List) -->
+    <schema:recipeInstructions rdf:list="true">
+      <schema:HowToStep>
+        <schema:text>Preheat oven to 375°F (190°C)</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Mix flour, baking soda, and salt in a bowl</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Cream together butter and both sugars</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Beat in eggs and vanilla extract</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Gradually blend in dry mixture</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Stir in chocolate chips</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Drop by spoonfuls onto ungreased cookie sheets</schema:text>
+      </schema:HowToStep>
+      <schema:HowToStep>
+        <schema:text>Bake for 10-12 minutes until golden brown</schema:text>
+      </schema:HowToStep>
+    </schema:recipeInstructions>
+    
+    <!-- Unordered bag of ingredients (rdf:Bag) -->
+    <schema:recipeIngredient rdf:bag="true">
+      <schema:text>2¼ cups all-purpose flour</schema:text>
+      <schema:text>1 cup butter, softened</schema:text>
+      <schema:text>¾ cup granulated sugar</schema:text>
+      <schema:text>¾ cup packed brown sugar</schema:text>
+      <schema:text>2 large eggs</schema:text>
+      <schema:text>1 tsp vanilla extract</schema:text>
+      <schema:text>1 tsp baking soda</schema:text>
+      <schema:text>1 tsp salt</schema:text>
+      <schema:text>2 cups chocolate chips</schema:text>
+    </schema:recipeIngredient>
+  </ex:Recipe>
+  
+  <!-- Software project with ordered dependencies -->
+  <ex:Project rdf:about="ex:my-web-app">
+    <schema:name>My Web Application</schema:name>
+    
+    <!-- Ordered list of dependencies (matters for build order) -->
+    <ex:buildDependencies rdf:list="true">
+      <ex:dependency>react@18.2.0</ex:dependency>
+      <ex:dependency>react-dom@18.2.0</ex:dependency>
+      <ex:dependency>react-router-dom@6.8.0</ex:dependency>
+      <ex:dependency>axios@1.3.0</ex:dependency>
+      <ex:dependency>styled-components@5.3.6</ex:dependency>
+    </ex:buildDependencies>
+    
+    <!-- Unordered set of supported platforms (rdf:Bag) -->
+    <ex:platforms rdf:bag="true">
+      <ex:platform>Windows</ex:platform>
+      <ex:platform>macOS</ex:platform>
+      <ex:platform>Linux</ex:platform>
+      <ex:platform>iOS</ex:platform>
+      <ex:platform>Android</ex:platform>
+    </ex:platforms>
+  </ex:Project>
+  
+  <!-- Playlist with ordered songs -->
+  <schema:MusicPlaylist rdf:about="ex:morning-workout">
+    <schema:name>Morning Workout Mix</schema:name>
+    <schema:numTracks type="integer">5</schema:numTracks>
+    
+    <!-- Ordered sequence (rdf:Seq) - order is significant -->
+    <schema:track rdf:seq="true">
+      <schema:MusicRecording rdf:about="ex:song1">
+        <schema:name>Eye of the Tiger</schema:name>
+        <schema:byArtist>Survivor</schema:byArtist>
+        <schema:duration>PT4M4S</schema:duration>
+      </schema:MusicRecording>
+      <schema:MusicRecording rdf:about="ex:song2">
+        <schema:name>Don't Stop Me Now</schema:name>
+        <schema:byArtist>Queen</schema:byArtist>
+        <schema:duration>PT3M29S</schema:duration>
+      </schema:MusicRecording>
+      <schema:MusicRecording rdf:about="ex:song3">
+        <schema:name>Stronger</schema:name>
+        <schema:byArtist>Kanye West</schema:byArtist>
+        <schema:duration>PT5M12S</schema:duration>
+      </schema:MusicRecording>
+      <schema:MusicRecording rdf:about="ex:song4">
+        <schema:name>Lose Yourself</schema:name>
+        <schema:byArtist>Eminem</schema:byArtist>
+        <schema:duration>PT5M26S</schema:duration>
+      </schema:MusicRecording>
+      <schema:MusicRecording rdf:about="ex:song5">
+        <schema:name>Till I Collapse</schema:name>
+        <schema:byArtist>Eminem</schema:byArtist>
+        <schema:duration>PT4M57S</schema:duration>
+      </schema:MusicRecording>
+    </schema:track>
+  </schema:MusicPlaylist>
+  
+  <!-- List of references using rdf:resources shorthand -->
+  <ex:Course rdf:about="ex:intro-to-rdf">
+    <schema:name>Introduction to RDF</schema:name>
+    
+    <!-- Ordered list of prerequisite courses -->
+    <ex:prerequisites rdf:list="true" rdf:resources="ex:intro-to-xml ex:intro-to-web ex:data-modeling"/>
+  </ex:Course>
+  
+  <!-- Supporting course definitions -->
+  <ex:Course rdf:about="ex:intro-to-xml">
+    <schema:name>Introduction to XML</schema:name>
+  </ex:Course>
+  
+  <ex:Course rdf:about="ex:intro-to-web">
+    <schema:name>Introduction to Web Technologies</schema:name>
+  </ex:Course>
+  
+  <ex:Course rdf:about="ex:data-modeling">
+    <schema:name>Data Modeling Fundamentals</schema:name>
+  </ex:Course>
+  
+  <!-- Comparison: Multiple properties vs. List -->
+  <schema:Person rdf:about="ex:alice">
+    <schema:name>Alice Smith</schema:name>
+    
+    <!-- Multiple properties (unordered, no specific relationship) -->
+    <ex:skill>Python</ex:skill>
+    <ex:skill>JavaScript</ex:skill>
+    <ex:skill>Java</ex:skill>
+    <ex:skill>Go</ex:skill>
+    
+    <!-- Ordered list (ranked by proficiency) -->
+    <ex:skillsRanked rdf:list="true">
+      <ex:skill>Python</ex:skill>
+      <ex:skill>JavaScript</ex:skill>
+      <ex:skill>Java</ex:skill>
+      <ex:skill>Go</ex:skill>
+    </ex:skillsRanked>
+    
+    <!-- Unordered set (certifications - no ranking) -->
+    <ex:certifications rdf:bag="true">
+      <ex:certification>AWS Certified Solutions Architect</ex:certification>
+      <ex:certification>Certified Kubernetes Administrator</ex:certification>
+      <ex:certification>Oracle Java SE Programmer</ex:certification>
+    </ex:certifications>
+  </schema:Person>
+  
+  <!-- Travel itinerary with ordered stops -->
+  <ex:Trip rdf:about="ex:europe-tour-2024">
+    <schema:name>European Adventure 2024</schema:name>
+    
+    <!-- Ordered sequence of cities (order matters for travel) -->
+    <ex:itinerary rdf:seq="true">
+      <schema:Place rdf:about="ex:paris">
+        <schema:name>Paris</schema:name>
+        <schema:addressCountry>France</schema:addressCountry>
+        <ex:duration>3 days</ex:duration>
+      </schema:Place>
+      <schema:Place rdf:about="ex:amsterdam">
+        <schema:name>Amsterdam</schema:name>
+        <schema:addressCountry>Netherlands</schema:addressCountry>
+        <ex:duration>2 days</ex:duration>
+      </schema:Place>
+      <schema:Place rdf:about="ex:berlin">
+        <schema:name>Berlin</schema:name>
+        <schema:addressCountry>Germany</schema:addressCountry>
+        <ex:duration>3 days</ex:duration>
+      </schema:Place>
+      <schema:Place rdf:about="ex:prague">
+        <schema:name>Prague</schema:name>
+        <schema:addressCountry>Czech Republic</schema:addressCountry>
+        <ex:duration>2 days</ex:duration>
+      </schema:Place>
+    </ex:itinerary>
+  </ex:Trip>
+</rdf:RDF>
